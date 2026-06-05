@@ -20,8 +20,8 @@ This project trains a 2-layer deep neural network on the MNIST dataset to recogn
 
 1. **Clone the repository:**
    ```bash
-   git clone 
-   cd DIGIT_RECOG_LOGISTICREG
+   git clone https://github.com/ssdunit/digit_recog_LogisticReg
+   cd digit_recog_LogisticReg
 
 2. **Create a virtual environment:**
     ```bash
@@ -44,8 +44,8 @@ This project is broken into three distinct scripts:
     Run this first. It downloads the MNIST images, scales them, and trains the weights using Cross-Entropy Loss.
     ```bash
 
-    python3 train.py
-
+    python3 model.py
+   ```
     Outputs: A my_mnist_model.npz file containing the optimized W and b matrices. Achieved 95.69% test accuracy(max).
 
 2. **Static Image Checker (checker.py)**
@@ -58,7 +58,7 @@ This project is broken into three distinct scripts:
     ./camera/dependencies.sh
     chmod +x ./camera/camerarun.sh
     ./camera/camerarun.sh
-
+   ```
     Once it is done we can move on and run
 
     ```bash
@@ -70,17 +70,31 @@ This project is broken into three distinct scripts:
 **The Math Behind the Code**
 
 This network relies entirely on the following mathematical concepts:
-
-    Forward Pass: Z1 = X · W1 + b1
-
-        A1 = max(0, Z1) (ReLU Activation)
-
-        Z2 = A1 · W2 + b2
-
-        A2 = Softmax(Z2)
-
-    Loss Function: Categorical Cross-Entropy.
-
-    Backward Pass: Computes partial derivatives using the Chain Rule to find dW and db, propagating the error back through the ReLU derivative mask.
-
-    Optimizer: Standard Gradient Descent.
+   
+   **Forward Pass:**
+   $$Z_1 = X \cdot W_1 + b_1$$
+   $$A_1 = \max(0, Z_1) \quad \text{(ReLU Activation)}$$
+   $$Z_2 = A_1 \cdot W_2 + b_2$$
+   $$A_2 = \text{Softmax}(Z_2)$$
+   
+   #### 2. Loss Function (Categorical Cross-Entropy)
+   Calculates the penalty for incorrect predictions by comparing the predicted probabilities ($A^{[2]}$) against the true One-Hot Encoded labels ($Y$):
+   $$L = - \frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} Y_{i,k} \log(A^{[2]}_{i,k})$$
+   
+   #### 3. Backward Pass (Backpropagation)
+   Uses the **Chain Rule** of calculus to trace the error backward from the output layer to the exact weights that caused it. 
+   
+   **Output Layer Gradients:**
+   $$dZ^{[2]} = A^{[2]} - Y$$
+   $$dW^{[2]} = \frac{1}{m} (A^{[1]})^T \cdot dZ^{[2]}$$
+   $$db^{[2]} = \frac{1}{m} \sum_{\text{rows}} dZ^{[2]}$$
+   
+   **Hidden Layer Gradients:**
+   $$dZ^{[1]} = (dZ^{[2]} \cdot (W^{[2]})^T) * \text{ReLU}'(Z^{[1]})$$
+   $$dW^{[1]} = \frac{1}{m} X^T \cdot dZ^{[1]}$$
+   $$db^{[1]} = \frac{1}{m} \sum_{\text{rows}} dZ^{[1]}$$
+   
+   #### 4. Optimizer (Standard Gradient Descent)
+   Updates the weights and biases by stepping in the opposite direction of the gradient, scaled by the learning rate ($\alpha$):
+   $$W^{[k]} = W^{[k]} - \alpha \cdot dW^{[k]}$$
+   $$b^{[k]} = b^{[k]} - \alpha \cdot db^{[k]}$$

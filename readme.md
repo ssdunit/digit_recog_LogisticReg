@@ -33,7 +33,7 @@ This project trains a 2-layer deep neural network on the MNIST dataset to recogn
     ```bash
 
     pip install numpy opencv-python scikit-learn matplotlib
-
+    ```
     (Note: scikit-learn is strictly used to fetch the MNIST dataset efficiently, not for model training).
 
 ## How to Use
@@ -46,7 +46,7 @@ This project is broken into three distinct scripts:
 
     python3 model.py
    ```
-    Outputs: A my_mnist_model.npz file containing the optimized W and b matrices. Achieved 95.69% test accuracy(max).
+    Outputs: A finaldataset.npz file containing the optimized W and b matrices. Achieved 95.69% test accuracy(max).
 
 2. **Static Image Checker (checker.py)**
 
@@ -64,7 +64,8 @@ This project is broken into three distinct scripts:
     ```bash
 
     python3 checker.py
-
+    
+    ```
     Outputs: Opens a real-time OpenCV window. Draw a digit on white paper with a thick black marker, hold it inside the targeting box, and watch the model predict the number. Press q to quit.
 
 **The Math Behind the Code**

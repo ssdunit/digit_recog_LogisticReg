@@ -107,3 +107,44 @@ This network relies entirely on the following mathematical concepts:
    
    $$W^{[k]} = W^{[k]} - \alpha \cdot dW^{[k]}$$
    $$b^{[k]} = b^{[k]} - \alpha \cdot db^{[k]}$$
+   
+### Architecture & Mathematical Foundations
+This network was purposefully designed from scratch to demonstrate the mathematical mechanics of deep learning. Below is the breakdown of the specific algorithms powering the engine.
+
+**1. Activation Functions:**
+
+* **Sigmoid (The Legacy Function):**
+<br><br>
+  <img src="https://media.geeksforgeeks.org/wp-content/uploads/20250131185746649092/Sigmoid-Activation-Function.png" width="400">
+
+  * Used for hidden layers, it squashes outputs between $0$ and $1$. When chained together, this shrinks the error signal, causing the network to stop learning (The Vanishing Gradient Problem). Clipped to avoid overflow.
+  * **Formula:** $\sigma(z) = \frac{1}{1 + e^{-z}}$
+  * **Derivative:** $\sigma'(z) = \sigma(z)(1 - \sigma(z))$
+
+* **ReLU (Rectified Linear Unit):**
+  <br><br>
+  <img src="https://media.geeksforgeeks.org/wp-content/uploads/20260415161304513642/Relu-activation-function.png" width="400">
+  
+  * It completely zeroes out negative numbers but passes positive numbers through unchanged. Its derivative is a constant $1$ for all positive values
+  * **Formula:** $f(z) = \max(0, z)$
+  * **Derivative:** $f'(z) = 1 \text{ if } z > 0 \text{ else } 0$
+
+* **Softmax (The Output Function):** Used strictly in the final layer for multi-class classification. It applies an exponential function to the raw output scores (logits) and divides by the sum of all exponentials. This aggressively amplifies the highest score and forces all 10 output nodes to mathematically compete, ensuring their probabilities perfectly sum to $1.0$ ($100\%$ confidence).
+  * **Formula:** $S(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$
+
+---
+
+**2. The Optimization Engine**
+
+**The Universal Update Rule (Gradient Descent):**
+$$\theta = \theta - \alpha \nabla J(\theta)$$
+* **$\theta$ (Parameters):** The network's Weights ($W$) and Biases ($b$).
+* **$\alpha$ (Learning Rate):** A scalar determining how large of a "step" the network takes.
+* **$\nabla J(\theta)$ (Gradient):** The multi-dimensional vector pointing up the steepest slope; we subtract it to travel down the curve.
+<br><br>
+  <img src="https://miro.medium.com/1*I2BkYWA_OJzHWFo6kc0fmQ.jpeg" width="400">
+<br><br>
+**The Three Strategies:**
+* **Full-Batch Gradient Descent:** Feeds all $56,000$ training images into the network at once. It calculates a perfectly smooth, accurate slope. However, it takes massive RAM and easily gets permanently stuck in shallow "fake" valleys (local minima).
+* **Stochastic Gradient Descent (SGD):** Feeds exactly $1$ image at a time. The slope calculation is highly erratic and noisy because it only sees one piece of data. This noise prevents it from getting stuck, but it is incredibly slow to compute in Python and never truly settles at the absolute bottom of the curve. worst algorithm
+* **Mini-Batch Gradient Descent:** The golden compromise. It slices the dataset into shuffled chunks of $128$ images. This introduces just enough mathematical "noise" to bounce the optimizer out of bad valleys, while remaining large enough to take full advantage of NumPy's hyper-fast C-based matrix multiplication. This avoids the issue of the algorithm getting stuck at a shallow point or at a valley of local minima
